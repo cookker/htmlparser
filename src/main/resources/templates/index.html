@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<HTML xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML을 파싱해보자</title>
+</head>
+<body>
+<div>
+    <label>URL</label>
+    <input type="text" id="url" placeholder="url을 입력하세요."/>
+    <label>Type</label>
+    <select name="parsing-type" id="parsing-type">
+        <option value="TXT">TXT</option>
+        <option value="HTML">HTML</option>
+    </select>
+
+    <label>출력묶음단위(자연수)</label>
+    <input type="number" id="bundle-count" placeholder="출력묶음단위" min="1">
+    <button id="print">출력</button>
+</div>
+
+<div>
+    <label>몫:</label>
+    <textarea id="quotient"></textarea>
+    <label>나머지:</label>
+    <textarea id="remainder"></textarea>
+</div>
+<script src="/webjars/jquery/3.3.1/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#print").on("click", ()=>{
+            const data = {
+            url:$("#url").val(),
+            type:$("#parsing-type").val(),
+            bundleCount:$("#bundle-count").val()
+            };
+            calcBundle(data);
+        });
+    });
+
+    function calcBundle(data) {
+        $.get("/parse?url=" + data.url +"&type=" + data.type + "&bundleCount=" + data.bundleCount, (result) => {
+
+            if(result && result.code === "0000"){
+                console.log(result);
+                $("#quotient").val(result.data.quotientList);
+                $("#remainder").val(result.data.remainder);
+            }else{
+                alert(result.message);
+            }
+
+        })
+    }
+</script>
+</body>
+</html>
